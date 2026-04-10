@@ -4,7 +4,9 @@ const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
+
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
@@ -39,16 +41,16 @@ app.post('/reportar-bug', async (req, res) => {
             body: JSON.stringify(embed)
         });
 
-        if (response.ok) {
-            res.status(200).send({ message: "Enviado" });
+if (response.ok) {
+            return res.status(200).send({ message: "Enviado com sucesso!" });
         } else {
-            const errData = await response.text();
-            res.status(response.status).send({ error: "Erro no Discord", detail: errData });
+            return res.status(500).send({ message: "Erro no Discord" });
         }
     } catch (error) {
-        res.status(500).send({ error: "Falha na conexão com o Webhook" });
+        console.error(error);
+        return res.status(500).send({ message: "Erro interno no servidor" });
     }
-});
+}); 
 
 app.get('/calculator', (req, res) => {
     res.sendFile(path.join(__dirname, 'calculator.html'));
