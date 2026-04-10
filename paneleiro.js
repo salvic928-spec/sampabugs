@@ -53,7 +53,7 @@ if (response.ok) {
 }); 
 
 app.get('/calculator', (req, res) => {
-    res.sendFile(path.join(__dirname, 'calculator.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.use((req, res) => {
