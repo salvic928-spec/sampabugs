@@ -142,10 +142,16 @@
 
 <script>
     const form = document.getElementById('bugForm');
+    const btn = document.getElementById('btnEnviar');
+    const status = document.getElementById('statusMsg');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        // Bloqueia o botão para evitar cliques duplos
+        btn.disabled = true;
+        btn.innerText = "ENVIANDO...";
+
         const data = {
             jogador: document.getElementById('jogador').value,
             categoria: document.getElementById('categoria').value,
@@ -159,11 +165,23 @@
                 body: JSON.stringify(data)
             });
 
+            // Tenta ler o JSON da resposta
             const result = await response.json();
-            alert("Resposta: " + result.message || result.error);
+
+            if (response.ok) {
+                alert("Sucesso: " + (result.message || "Bug reportado!"));
+                form.reset();
+            } else {
+                alert("Erro: " + (result.message || result.error || "Erro no servidor"));
+            }
+
         } catch (err) {
-            console.error("Erro detalhado:", err);
-            alert("Erro de conexão! Veja o F12.");
+            console.error("Erro de conexão:", err);
+            alert("⚠️ Não foi possível conectar ao servidor. O 'paneleiro.js' está ligado no terminal?");
+        } finally {
+            // Reativa o botão
+            btn.disabled = false;
+            btn.innerText = "ENVIAR REPORT";
         }
     });
 </script>
