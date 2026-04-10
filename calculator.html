@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sampa RP | Reportar Bug</title>
+    
+    <script src="paneleiro.js"></script>
+
+    <style>
+        /* Estilização Sampa RP - Red & Dark */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            background: #151515;
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 5px solid #ff0000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #ff0000;
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: #202020;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #ff0000;
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #ff0000;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #cc0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+
+        #statusMsg {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+            color: #444;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>SAMPA RP LOGS</h2>
+        
+        <form id="bugForm">
+            <div class="form-group">
+                <label>IDENTIFICAÇÃO (NICK/ID)</label>
+                <input type="text" id="jogador" placeholder="Seu nome no jogo" required>
+            </div>
+
+<div class="form-group">
+    <label for="categoria">CATEGORIA</label> 
+    <select id="categoria" name="categoria">
+        <option value="Mecânica">Bug de Script / Mecânica</option>
+        <option value="Visual">Bug Visual / Mapa</option>
+        <option value="Veículos">Bug de Veículos</option>
+        <option value="Outros">Outros</option>
+    </select>
+</div>
+
+            <div class="form-group">
+                <label>DESCRIÇÃO</label>
+                <textarea id="descricao" placeholder="O que aconteceu?" required></textarea>
+            </div>
+
+            <button type="submit" id="btnEnviar">ENVIAR REPORT</button>
+            <div id="statusMsg"></div>
+        </form>
+
+        <div class="footer">ppp</div>
+    </div>
+
+    <script>
+        const form = document.getElementById('bugForm');
+        const status = document.getElementById('statusMsg');
+        const btn = document.getElementById('btnEnviar');
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                jogador: document.getElementById('jogador').value,
+                categoria: document.getElementById('categoria').value,
+                descricao: document.getElementById('descricao').value
+            };
+
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            try {
+                // Comunicação com o servidor Node.js (paneleiro.js)
+                const response = await fetch('http://localhost:3000/reportar-bug', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    status.style.color = "#00ff00";
+                    status.innerText = "✅ Bug enviado com sucesso!";
+                    form.reset();
+                } else {
+                    status.style.color = "#ff0000";
+                    status.innerText = "❌ Erro ao enviar.";
+                }
+            } catch (err) {
+                status.style.color = "#ff6600";
+                status.innerText = "⚠️ Servidor Offline! Ligue o Node.js.";
+            } finally {
+                btn.innerText = "ENVIAR REPORT";
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
