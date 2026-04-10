@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sampa RP | Reportar Bug</title>
-    
 
     <style>
         /* Estilização Sampa RP - Red & Dark */
@@ -141,47 +140,32 @@
         <div class="footer">ppp</div>
     </div>
 
-    <script>
-        const form = document.getElementById('bugForm');
-        const status = document.getElementById('statusMsg');
-        const btn = document.getElementById('btnEnviar');
+<script>
+    const form = document.getElementById('bugForm');
 
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            
-            const data = {
-                jogador: document.getElementById('jogador').value,
-                categoria: document.getElementById('categoria').value,
-                descricao: document.getElementById('descricao').value
-            };
-
-            btn.innerText = "ENVIANDO...";
-            btn.disabled = true;
-
-            try {
-                // Comunicação com o servidor Node.js (paneleiro.js)
-                const response = await fetch('http://localhost:3000/reportar-bug', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    status.style.color = "#00ff00";
-                    status.innerText = "✅ Bug enviado com sucesso!";
-                    form.reset();
-                } else {
-                    status.style.color = "#ff0000";
-                    status.innerText = "❌ Erro ao enviar.";
-                }
-            } catch (err) {
-                status.style.color = "#ff6600";
-                status.innerText = "⚠️ Servidor Offline! Ligue o Node.js.";
-            } finally {
-                btn.innerText = "ENVIAR REPORT";
-                btn.disabled = false;
-            }
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            jogador: document.getElementById('jogador').value,
+            categoria: document.getElementById('categoria').value,
+            descricao: document.getElementById('descricao').value
         };
-    </script>
+
+        try {
+            const response = await fetch('http://127.0.0.1:3000/reportar-bug', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            alert("Resposta: " + result.message || result.error);
+        } catch (err) {
+            console.error("Erro detalhado:", err);
+            alert("Erro de conexão! Veja o F12.");
+        }
+    });
+</script>
 </body>
 </html>
